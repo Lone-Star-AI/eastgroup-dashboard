@@ -17,13 +17,16 @@ st.set_page_config(
 )
 
 # --- DATABASE CONNECTION ---
-# Using the credentials and connection method we know works.
-DB_USER = "jpgair"
-DB_PASSWORD = "longhorn"
-DB_HOST = "127.0.0.1"
-DB_PORT = "5432"
-DB_NAME = "eastgroup_analytics"
+# Get credentials from Streamlit's secure secrets manager
+DB_USER = st.secrets["DB_USER"]
+DB_PASSWORD = st.secrets["DB_PASSWORD"]
+DB_HOST = st.secrets["DB_HOST"]
+DB_PORT = st.secrets["DB_PORT"]
+DB_NAME = st.secrets["DB_NAME"]
 
+# Create the database engine using the secrets
+# NOTE: We are back to using psycopg2, as the WKT method in the query handles the geometry.
+db_engine = create_engine(f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
 # Create a standard SQLAlchemy engine.
 # The special SQL query will handle the geometry conversion.
 db_engine = create_engine(f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
